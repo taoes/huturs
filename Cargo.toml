@@ -1,0 +1,4 @@
+# 根目录 Cargo.toml
+[workspace]
+members = ["huturs-core", "example"]
+resolver = "2"
