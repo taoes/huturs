@@ -7,7 +7,7 @@ pub mod io;
 pub mod math;
 pub mod str;
 pub mod timestamp;
-mod stopwatch;
+pub mod stopwatch;
 
 // 重新导出常用模块
 pub use amount::*;
@@ -16,3 +16,4 @@ pub use io::*;
 pub use math::*;
 pub use str::*;
 pub use timestamp::*;
+pub use stopwatch::*;

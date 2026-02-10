@@ -1,5 +1,7 @@
 .PHONY: test test-core test-all clean help
-
+doc:
+	@echo "Generating documentation..."
+	@cargo doc --no-deps --open
 # 运行 huturs-core 的所有测试（包括 test 目录下的集成测试）
 test:
 	@echo "Running huturs-core tests..."
