@@ -70,3 +70,18 @@ pub  fn test_reverse(){
     assert_eq!(reverse("abc123"), "321cba");
     assert_eq!(reverse("abc123abc"), "cba321cba");
 }
+
+
+#[test]
+pub fn test_split(){
+    assert_eq!(split("", ",").len(), 1);
+    assert_eq!(split("1,2,3,4", ",").len(), 4);
+    assert_eq!(split("1,2,,3", ",").len(), 4);
+}
+
+#[test]
+pub fn test_join(){
+    assert_eq!(join(&[""], ","), "");
+    assert_eq!(join(&["1","2","3"], ","), "1,2,3");
+
+}

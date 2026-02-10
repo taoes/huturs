@@ -3,7 +3,7 @@
 
 pub mod amount;
 pub mod datetime;
-pub mod io;
+pub mod file;
 pub mod math;
 pub mod str;
 pub mod timestamp;
@@ -12,7 +12,7 @@ pub mod stopwatch;
 // 重新导出常用模块
 pub use amount::*;
 pub use datetime::*;
-pub use io::*;
+pub use file::*;
 pub use math::*;
 pub use str::*;
 pub use timestamp::*;
