@@ -1,7 +1,7 @@
 //! 日期时间工具类模块
 //! 提供日期时间处理相关的工具函数，包括格式化、解析和偏移计算
 
-use chrono::{DateTime, Local, NaiveDateTime, TimeZone, Timelike};
+use chrono::{DateTime, Local, NaiveDateTime, TimeZone};
 use std::fmt::Display;
 
 /// 格式化当前时间为指定格式的字符串
