@@ -58,7 +58,7 @@ pub fn subtract<T: std::ops::Sub<Output = T>>(a: T, b: T) -> T {
 /// use huturs_core::math;
 ///
 /// assert_eq!(math::multiply(3, 4), 12);
-/// assert_eq!(math::multiply(2.5, 4), 10.0);
+/// assert_eq!(math::multiply(2.5, 4.0), 10.0);
 /// ```
 pub fn multiply<T: std::ops::Mul<Output = T>>(a: T, b: T) -> T {
     a * b
