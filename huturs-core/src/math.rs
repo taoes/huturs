@@ -402,3 +402,140 @@ pub fn min_in_array<T: PartialOrd + Copy>(numbers: &[T]) -> Option<T> {
     }
     Some(min_val)
 }
+
+/// 计算方差
+///
+/// # 参数
+/// * `numbers` - 数值数组，需要支持加法运算和可以转换为 f64
+///
+/// # 返回值
+/// 返回数组的方差，如果数组为空则返回 0.0
+///
+/// # 示例
+///
+/// ```
+/// use huturs_core::math;
+///
+/// let nums = vec![1.0, 2.0, 3.0, 4.0, 5.0];
+/// let var = math::variance(&nums);
+/// assert!((var - 2.0).abs() < 0.0001);
+/// ```
+pub fn variance<T>(numbers: &[T]) -> f64
+where
+    T: std::ops::Add<Output = T> + Copy + Into<f64>,
+{
+    if numbers.is_empty() {
+        return 0.0;
+    }
+
+    // 计算总和
+    let sum: f64 = numbers.iter().map(|&x| x.into()).sum();
+
+    // 计算平均值
+    let mean = sum / numbers.len() as f64;
+
+    // 计算方差：每个值与平均值的差的平方的平均
+    let variance_sum: f64 = numbers
+        .iter()
+        .map(|&x| {
+            let diff = x.into() - mean;
+            diff * diff
+        })
+        .sum();
+
+    variance_sum / numbers.len() as f64
+}
+
+/// 计算样本方差
+///
+/// # 参数
+/// * `numbers` - 数值数组，需要支持加法运算和可以转换为 f64
+///
+/// # 返回值
+/// 返回数组的样本方差（除以 n-1），如果数组元素少于 2 个则返回 0.0
+///
+/// # 注意
+/// 样本方差使用贝塞尔校正，除以 n-1 而不是 n，用于估计总体方差的无偏估计
+///
+/// # 示例
+///
+/// ```
+/// use huturs_core::math;
+///
+/// let nums = vec![1.0, 2.0, 3.0, 4.0, 5.0];
+/// let var = math::sample_variance(&nums);
+/// assert!((var - 2.5).abs() < 0.0001);
+/// ```
+pub fn sample_variance<T>(numbers: &[T]) -> f64
+where
+    T: std::ops::Add<Output = T> + Copy + Into<f64>,
+{
+    if numbers.len() < 2 {
+        return 0.0;
+    }
+
+    // 计算总和
+    let sum: f64 = numbers.iter().map(|&x| x.into()).sum();
+
+    // 计算平均值
+    let mean = sum / numbers.len() as f64;
+
+    // 计算样本方差：每个值与平均值的差的平方的和，除以 n-1
+    let variance_sum: f64 = numbers
+        .iter()
+        .map(|&x| {
+            let diff = x.into() - mean;
+            diff * diff
+        })
+        .sum();
+
+    variance_sum / (numbers.len() - 1) as f64
+}
+
+/// 计算标准差
+///
+/// # 参数
+/// * `numbers` - 数值数组，需要支持加法运算和可以转换为 f64
+///
+/// # 返回值
+/// 返回数组的标准差（方差的平方根），如果数组为空则返回 0.0
+///
+/// # 示例
+///
+/// ```
+/// use huturs_core::math;
+///
+/// let nums = vec![1.0, 2.0, 3.0, 4.0, 5.0];
+/// let std_dev = math::standard_deviation(&nums);
+/// assert!((std_dev - 1.4142).abs() < 0.0001);
+/// ```
+pub fn standard_deviation<T>(numbers: &[T]) -> f64
+where
+    T: std::ops::Add<Output = T> + Copy + Into<f64>,
+{
+    variance(numbers).sqrt()
+}
+
+/// 计算样本标准差
+///
+/// # 参数
+/// * `numbers` - 数值数组，需要支持加法运算和可以转换为 f64
+///
+/// # 返回值
+/// 返回数组的样本标准差（样本方差的平方根），如果数组元素少于 2 个则返回 0.0
+///
+/// # 示例
+///
+/// ```
+/// use huturs_core::math;
+///
+/// let nums = vec![1.0, 2.0, 3.0, 4.0, 5.0];
+/// let std_dev = math::sample_standard_deviation(&nums);
+/// assert!((std_dev - 1.5811).abs() < 0.0001);
+/// ```
+pub fn sample_standard_deviation<T>(numbers: &[T]) -> f64
+where
+    T: std::ops::Add<Output = T> + Copy + Into<f64>,
+{
+    sample_variance(numbers).sqrt()
+}
