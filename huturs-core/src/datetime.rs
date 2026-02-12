@@ -1,7 +1,7 @@
 //! 日期时间工具类模块
 //! 提供日期时间处理相关的工具函数，包括格式化、解析和偏移计算
 
-use chrono::{DateTime, Datelike, Local, NaiveDateTime, NaiveTime, TimeZone, Timelike, Weekday};
+use chrono::{DateTime, Datelike, Local, NaiveDateTime, TimeZone, Timelike};
 use std::fmt::Display;
 use std::io::Error;
 
@@ -247,7 +247,8 @@ where
     T: TimeZone,
 {
     let days_until_sunday = 6 - date_time.weekday().num_days_from_monday();
-    let end_of_week: DateTime<T> = date_time.clone() + chrono::Duration::days(days_until_sunday as i64);
+    let end_of_week: DateTime<T> =
+        date_time.clone() + chrono::Duration::days(days_until_sunday as i64);
     end_of_week
         .with_hour(23)
         .and_then(|dt: DateTime<T>| dt.with_minute(59))
@@ -479,4 +480,99 @@ pub fn offset<T: TimeZone>(
 /// ```
 pub fn between<T: TimeZone>(date_time1: &DateTime<T>, date_time2: &DateTime<T>) -> i64 {
     (date_time2.naive_local() - date_time1.naive_local()).num_seconds()
+}
+
+/// 判断第一个日期时间是否在第二个日期时间之前
+///
+/// # 参数
+/// * `dt1` - 第一个日期时间
+/// * `dt2` - 第二个日期时间
+///
+/// # 返回值
+/// 如果 `dt1` 早于 `dt2`，返回 `true`，否则返回 `false`
+///
+/// # 示例
+/// ```
+/// use chrono::{Local, NaiveDateTime, TimeZone};
+/// use huturs_core::datetime;
+/// let naive1 = NaiveDateTime::parse_from_str("2024-06-15 10:00:00", "%Y-%m-%d %H:%M:%S").unwrap();
+/// let naive2 = NaiveDateTime::parse_from_str("2024-06-15 11:00:00", "%Y-%m-%d %H:%M:%S").unwrap();
+/// let dt1 = Local.from_local_datetime(&naive1).unwrap();
+/// let dt2 = Local.from_local_datetime(&naive2).unwrap();
+/// assert_eq!(datetime::before(dt1, dt2), true);
+/// ```
+pub fn before<T: TimeZone>(dt1: DateTime<T>, dt2: DateTime<T>) -> bool {
+    dt1 < dt2
+}
+
+/// 判断第一个日期时间是否在第二个日期时间之后
+///
+/// # 参数
+/// * `dt1` - 第一个日期时间
+/// * `dt2` - 第二个日期时间
+///
+/// # 返回值
+/// 如果 `dt1` 晚于 `dt2`，返回 `true`，否则返回 `false`
+///
+/// # 示例
+/// ```
+/// use chrono::{Local, NaiveDateTime, TimeZone};
+/// use huturs_core::datetime;
+/// let naive1 = NaiveDateTime::parse_from_str("2024-06-15 11:00:00", "%Y-%m-%d %H:%M:%S").unwrap();
+/// let naive2 = NaiveDateTime::parse_from_str("2024-06-15 10:00:00", "%Y-%m-%d %H:%M:%S").unwrap();
+/// let dt1 = Local.from_local_datetime(&naive1).unwrap();
+/// let dt2 = Local.from_local_datetime(&naive2).unwrap();
+/// assert_eq!(datetime::after(dt1, dt2), true);
+/// ```
+pub fn after<T: TimeZone>(dt1: DateTime<T>, dt2: DateTime<T>) -> bool {
+    dt1 > dt2
+}
+
+/// 判断两个日期时间是否相等
+///
+/// # 参数
+/// * `dt1` - 第一个日期时间
+/// * `dt2` - 第二个日期时间
+///
+/// # 返回值
+/// 如果两个日期时间相同，返回 `true`，否则返回 `false`
+///
+/// # 示例
+/// ```
+/// use chrono::{Local, NaiveDateTime, TimeZone};
+/// use huturs_core::datetime;
+/// let naive1 = NaiveDateTime::parse_from_str("2024-06-15 10:00:00", "%Y-%m-%d %H:%M:%S").unwrap();
+/// let naive2 = NaiveDateTime::parse_from_str("2024-06-15 10:00:00", "%Y-%m-%d %H:%M:%S").unwrap();
+/// let dt1 = Local.from_local_datetime(&naive1).unwrap();
+/// let dt2 = Local.from_local_datetime(&naive2).unwrap();
+/// assert_eq!(datetime::equal(&dt1, &dt2), true);
+/// ```
+pub fn equal<T: TimeZone>(dt1: &DateTime<T>, dt2: &DateTime<T>) -> bool {
+    *dt1 == *dt2
+}
+/// 判断两个不同时区的日期时间是否相等
+///
+/// # 参数
+/// * `dt1` - 第一个日期时间
+/// * `dt2` - 第二个日期时间
+///
+/// # 返回值
+/// 如果两个日期时间代表同一时刻（转换为 UTC 后相等），返回 `true`，否则返回 `false`
+///
+/// # 示例
+/// ```
+/// use chrono::{DateTime, FixedOffset, NaiveDateTime, TimeZone, Utc};
+/// use huturs_core::datetime;
+/// let naive_utc = NaiveDateTime::parse_from_str("2024-06-15 07:30:00", "%Y-%m-%d %H:%M:%S").unwrap();
+/// let naive_east8 = NaiveDateTime::parse_from_str("2024-06-15 15:30:00", "%Y-%m-%d %H:%M:%S").unwrap();
+/// let dt_utc: DateTime<Utc> = Utc.from_utc_datetime(&naive_utc);
+/// let offset_east8 = FixedOffset::east_opt(8 * 3600).unwrap();
+/// let dt_east8: DateTime<FixedOffset> = offset_east8.from_local_datetime(&naive_east8).unwrap();
+/// assert_eq!(datetime::equal_different_timezone(&dt_utc, &dt_east8), true);
+/// ```
+pub fn equal_different_timezone<T: TimeZone, U: TimeZone>(
+    dt1: &DateTime<T>,
+    dt2: &DateTime<U>,
+) -> bool {
+    dt1.timestamp() == dt2.timestamp()
 }
