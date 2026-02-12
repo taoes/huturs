@@ -5,13 +5,14 @@ edition = "2021"
 
 
 [features]
-default = ["amount", "datetime", "file", "math", "stopwatch", "str", "timestamp"]
+default = ["amount", "datetime", "file", "math", "stopwatch", "str", "timestamp", "util"]
 str = []
 amount = []
 file = []
 math = []
 stopwatch = []
 timestamp = []
+util = []
 datetime = ["str", "dep:chrono"]
 
 

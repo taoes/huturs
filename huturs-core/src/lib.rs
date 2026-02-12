@@ -49,3 +49,10 @@ pub use timestamp::*;
 pub mod stopwatch;
 #[cfg(feature = "stopwatch")]
 pub use stopwatch::*;
+
+// 通用工具类
+#[cfg(feature = "util")]
+#[cfg_attr(docsrs, doc(cfg(feature = "util")))]
+pub mod util;
+#[cfg(feature = "util")]
+pub use util::*;
