@@ -365,3 +365,61 @@ pub fn test_end_time_of_week() {
     assert_eq!(end.hour(), 23);
     assert_eq!(end.minute(), 59);
 }
+
+#[test]
+pub fn test_is_am() {
+    // 测试上午时间（0:00 - 11:59）
+    let naive = NaiveDateTime::parse_from_str("2024-06-15 00:00:00", "%Y-%m-%d %H:%M:%S").unwrap();
+    let date_time: DateTime<Local> = Local.from_local_datetime(&naive).unwrap();
+    assert_eq!(is_am(&date_time), true);
+
+    let naive = NaiveDateTime::parse_from_str("2024-06-15 10:30:00", "%Y-%m-%d %H:%M:%S").unwrap();
+    let date_time: DateTime<Local> = Local.from_local_datetime(&naive).unwrap();
+    assert_eq!(is_am(&date_time), true);
+
+    let naive = NaiveDateTime::parse_from_str("2024-06-15 11:59:59", "%Y-%m-%d %H:%M:%S").unwrap();
+    let date_time: DateTime<Local> = Local.from_local_datetime(&naive).unwrap();
+    assert_eq!(is_am(&date_time), true);
+
+    // 测试下午时间（12:00 - 23:59）
+    let naive = NaiveDateTime::parse_from_str("2024-06-15 12:00:00", "%Y-%m-%d %H:%M:%S").unwrap();
+    let date_time: DateTime<Local> = Local.from_local_datetime(&naive).unwrap();
+    assert_eq!(is_am(&date_time), false);
+
+    let naive = NaiveDateTime::parse_from_str("2024-06-15 15:30:00", "%Y-%m-%d %H:%M:%S").unwrap();
+    let date_time: DateTime<Local> = Local.from_local_datetime(&naive).unwrap();
+    assert_eq!(is_am(&date_time), false);
+
+    let naive = NaiveDateTime::parse_from_str("2024-06-15 23:59:59", "%Y-%m-%d %H:%M:%S").unwrap();
+    let date_time: DateTime<Local> = Local.from_local_datetime(&naive).unwrap();
+    assert_eq!(is_am(&date_time), false);
+}
+
+#[test]
+pub fn test_is_pm() {
+    // 测试上午时间（0:00 - 11:59）
+    let naive = NaiveDateTime::parse_from_str("2024-06-15 00:00:00", "%Y-%m-%d %H:%M:%S").unwrap();
+    let date_time: DateTime<Local> = Local.from_local_datetime(&naive).unwrap();
+    assert_eq!(is_pm(&date_time), false);
+
+    let naive = NaiveDateTime::parse_from_str("2024-06-15 10:30:00", "%Y-%m-%d %H:%M:%S").unwrap();
+    let date_time: DateTime<Local> = Local.from_local_datetime(&naive).unwrap();
+    assert_eq!(is_pm(&date_time), false);
+
+    let naive = NaiveDateTime::parse_from_str("2024-06-15 11:59:59", "%Y-%m-%d %H:%M:%S").unwrap();
+    let date_time: DateTime<Local> = Local.from_local_datetime(&naive).unwrap();
+    assert_eq!(is_pm(&date_time), false);
+
+    // 测试下午时间（12:00 - 23:59）
+    let naive = NaiveDateTime::parse_from_str("2024-06-15 12:00:00", "%Y-%m-%d %H:%M:%S").unwrap();
+    let date_time: DateTime<Local> = Local.from_local_datetime(&naive).unwrap();
+    assert_eq!(is_pm(&date_time), true);
+
+    let naive = NaiveDateTime::parse_from_str("2024-06-15 15:30:00", "%Y-%m-%d %H:%M:%S").unwrap();
+    let date_time: DateTime<Local> = Local.from_local_datetime(&naive).unwrap();
+    assert_eq!(is_pm(&date_time), true);
+
+    let naive = NaiveDateTime::parse_from_str("2024-06-15 23:59:59", "%Y-%m-%d %H:%M:%S").unwrap();
+    let date_time: DateTime<Local> = Local.from_local_datetime(&naive).unwrap();
+    assert_eq!(is_pm(&date_time), true);
+}

@@ -15,6 +15,8 @@ use std::io::Error;
 ///
 /// # 示例
 /// ```
+/// use chrono::Local;
+/// use chrono::Timelike;
 /// use huturs_core::datetime;
 /// let formatted = datetime::format_current("%Y-%m-%d %H:%M:%S");
 /// assert!(formatted.is_some());
@@ -35,6 +37,7 @@ pub fn format_current(fmt: &str) -> Option<String> {
 /// # 示例
 /// ```
 /// use chrono::Local;
+/// use chrono::Timelike;
 /// use huturs_core::datetime;
 /// let now = Local::now();
 /// let formatted = datetime::format(&now, "%Y-%m-%d");
@@ -61,6 +64,7 @@ where
 /// # 示例
 /// ```
 /// use chrono::Local;
+/// use chrono::Timelike;
 /// use huturs_core::datetime;
 /// let result = datetime::parse(
 ///     &"2024-01-01 12:00:00".to_string(),
@@ -96,6 +100,7 @@ where
 ///
 /// # 示例
 /// ```
+/// use chrono::Timelike;
 /// use huturs_core::datetime;
 /// let result = datetime::reformat(
 ///     &"2024-01-01 12:00:00".to_string(),
@@ -111,6 +116,22 @@ pub fn reformat(content: &String, original_fmt: &String, new_fmt: &String) -> Op
     }
 }
 
+/// 判断给定日期时间是否为上午（AM）
+///
+/// # 参数
+/// * `date_time` - 日期时间对象
+///
+/// # 返回值
+/// 如果小时数小于12，返回 `true`，否则返回 `false`
+///
+/// # 示例
+/// ```
+/// use chrono::{Local, NaiveDateTime, TimeZone, Timelike};
+/// use huturs_core::datetime;
+/// let naive = NaiveDateTime::parse_from_str("2024-06-15 10:30:00", "%Y-%m-%d %H:%M:%S").unwrap();
+/// let date_time = Local.from_local_datetime(&naive).unwrap();
+/// assert_eq!(datetime::is_am(&date_time), true);
+/// ```
 pub fn is_am<T>(date_time: &DateTime<T>) -> bool
 where
     T: TimeZone,
@@ -118,6 +139,22 @@ where
     date_time.hour() < 12
 }
 
+/// 判断给定日期时间是否为下午（PM）
+///
+/// # 参数
+/// * `date_time` - 日期时间对象
+///
+/// # 返回值
+/// 如果小时数大于等于12，返回 `true`，否则返回 `false`
+///
+/// # 示例
+/// ```
+/// use chrono::{Local, NaiveDateTime, TimeZone, Timelike};
+/// use huturs_core::datetime;
+/// let naive = NaiveDateTime::parse_from_str("2024-06-15 14:30:00", "%Y-%m-%d %H:%M:%S").unwrap();
+/// let date_time = Local.from_local_datetime(&naive).unwrap();
+/// assert_eq!(datetime::is_pm(&date_time), true);
+/// ```
 pub fn is_pm<T>(date_time: &DateTime<T>) -> bool
 where
     T: TimeZone,
@@ -125,6 +162,25 @@ where
     date_time.hour() >= 12
 }
 
+/// 获取给定日期时间所在天的结束时间
+///
+/// # 参数
+/// * `date_time` - 日期时间对象
+///
+/// # 返回值
+/// 返回同一天的最后一刻（23:59:59.999999999），如果设置失败则返回 `None`
+///
+/// # 示例
+/// ```
+/// use chrono::{Datelike, Local, NaiveDateTime, TimeZone, Timelike};
+/// use huturs_core::datetime;
+/// let naive = NaiveDateTime::parse_from_str("2024-06-15 10:30:00", "%Y-%m-%d %H:%M:%S").unwrap();
+/// let date_time = Local.from_local_datetime(&naive).unwrap();
+/// let end = datetime::end_time_of_day(&date_time).unwrap();
+/// assert_eq!(end.hour(), 23);
+/// assert_eq!(end.minute(), 59);
+/// assert_eq!(end.second(), 59);
+/// ```
 pub fn end_time_of_day<T>(date_time: &DateTime<T>) -> Option<DateTime<T>>
 where
     T: TimeZone,
@@ -136,6 +192,26 @@ where
         .and_then(|dt| dt.with_second(59))
         .and_then(|dt| dt.with_nanosecond(999_999_999))
 }
+
+/// 获取给定日期时间所在天的开始时间
+///
+/// # 参数
+/// * `date_time` - 日期时间对象
+///
+/// # 返回值
+/// 返回同一天的开始时间（00:00:00），如果设置失败则返回 `None`
+///
+/// # 示例
+/// ```
+/// use chrono::{Datelike, Local, NaiveDateTime, TimeZone, Timelike};
+/// use huturs_core::datetime;
+/// let naive = NaiveDateTime::parse_from_str("2024-06-15 10:30:00", "%Y-%m-%d %H:%M:%S").unwrap();
+/// let date_time = Local.from_local_datetime(&naive).unwrap();
+/// let start = datetime::start_time_of_day(&date_time).unwrap();
+/// assert_eq!(start.hour(), 0);
+/// assert_eq!(start.minute(), 0);
+/// assert_eq!(start.second(), 0);
+/// ```
 pub fn start_time_of_day<T>(date_time: &DateTime<T>) -> Option<DateTime<T>>
 where
     T: TimeZone,
@@ -148,6 +224,24 @@ where
         .and_then(|dt| dt.with_nanosecond(0))
 }
 
+/// 获取给定日期时间所在周的结束时间
+///
+/// # 参数
+/// * `date_time` - 日期时间对象
+///
+/// # 返回值
+/// 返回该周的最后一天（周日）的最后一刻（23:59:59.999999999），如果设置失败则返回 `None`
+///
+/// # 示例
+/// ```
+/// use chrono::{Datelike, Local, NaiveDateTime, TimeZone, Timelike};
+/// use huturs_core::datetime;
+/// let naive = NaiveDateTime::parse_from_str("2024-06-12 10:30:00", "%Y-%m-%d %H:%M:%S").unwrap();
+/// let date_time = Local.from_local_datetime(&naive).unwrap();
+/// let end = datetime::end_time_of_week(&date_time).unwrap();
+/// assert_eq!(end.day(), 16); // 6月12日是周三，周日是6月16日
+/// assert_eq!(end.hour(), 23);
+/// ```
 pub fn end_time_of_week<T>(date_time: &DateTime<T>) -> Option<DateTime<T>>
 where
     T: TimeZone,
@@ -160,6 +254,25 @@ where
         .and_then(|dt: DateTime<T>| dt.with_second(59))
         .and_then(|dt: DateTime<T>| dt.with_nanosecond(999_999_999))
 }
+
+/// 获取给定日期时间所在周的开始时间
+///
+/// # 参数
+/// * `date_time` - 日期时间对象
+///
+/// # 返回值
+/// 返回该周的第一天（周一）的开始时间（00:00:00），如果设置失败则返回 `None`
+///
+/// # 示例
+/// ```
+/// use chrono::{Datelike, Local, NaiveDateTime, TimeZone, Timelike};
+/// use huturs_core::datetime;
+/// let naive = NaiveDateTime::parse_from_str("2024-06-12 10:30:00", "%Y-%m-%d %H:%M:%S").unwrap();
+/// let date_time = Local.from_local_datetime(&naive).unwrap();
+/// let start = datetime::start_time_of_week(&date_time).unwrap();
+/// assert_eq!(start.day(), 10); // 6月12日是周三，周一是6月10日
+/// assert_eq!(start.hour(), 0);
+/// ```
 pub fn start_time_of_week<T>(date_time: &DateTime<T>) -> Option<DateTime<T>>
 where
     T: TimeZone,
@@ -173,6 +286,24 @@ where
         .and_then(|dt| dt.with_nanosecond(0))
 }
 
+/// 获取给定日期时间所在月的结束时间
+///
+/// # 参数
+/// * `date` - 日期时间对象
+///
+/// # 返回值
+/// 返回该月的最后一天的最后一刻（23:59:59.999999999），如果设置失败则返回 `None`
+///
+/// # 示例
+/// ```
+/// use chrono::{Datelike, Local, NaiveDateTime, TimeZone, Timelike};
+/// use huturs_core::datetime;
+/// let naive = NaiveDateTime::parse_from_str("2024-06-15 10:30:00", "%Y-%m-%d %H:%M:%S").unwrap();
+/// let date = Local.from_local_datetime(&naive).unwrap();
+/// let end = datetime::end_time_of_month(&date).unwrap();
+/// assert_eq!(end.day(), 30); // 6月有30天
+/// assert_eq!(end.hour(), 23);
+/// ```
 pub fn end_time_of_month<T>(date: &DateTime<T>) -> Option<DateTime<T>>
 where
     T: TimeZone,
@@ -184,6 +315,25 @@ where
         .and_then(|dt| dt.with_second(59))
         .and_then(|dt| dt.with_nanosecond(999_999_999))
 }
+
+/// 获取给定日期时间所在月的开始时间
+///
+/// # 参数
+/// * `date` - 日期时间对象
+///
+/// # 返回值
+/// 返回该月的第一天的开始时间（00:00:00），如果设置失败则返回 `None`
+///
+/// # 示例
+/// ```
+/// use chrono::{Datelike, Local, NaiveDateTime, TimeZone, Timelike};
+/// use huturs_core::datetime;
+/// let naive = NaiveDateTime::parse_from_str("2024-06-15 10:30:00", "%Y-%m-%d %H:%M:%S").unwrap();
+/// let date = Local.from_local_datetime(&naive).unwrap();
+/// let start = datetime::start_time_of_month(&date).unwrap();
+/// assert_eq!(start.day(), 1);
+/// assert_eq!(start.hour(), 0);
+/// ```
 pub fn start_time_of_month<T>(date: &DateTime<T>) -> Option<DateTime<T>>
 where
     T: TimeZone,
@@ -206,7 +356,7 @@ where
 ///
 /// # 示例
 /// ```
-/// use chrono::{Datelike, Local, NaiveDateTime, TimeZone};
+/// use chrono::{Datelike, Local, NaiveDateTime, TimeZone, Timelike};
 /// use huturs_core::datetime;
 /// let naive = NaiveDateTime::parse_from_str("2024-06-15 10:30:00", "%Y-%m-%d %H:%M:%S").unwrap();
 /// let date = Local.from_local_datetime(&naive).unwrap();
@@ -228,6 +378,25 @@ where
         .and_then(|dt| dt.with_nanosecond(999_999_999))
         .expect("Failed to calculate end of year")
 }
+/// 获取给定日期时间所在年份的开始时间
+///
+/// # 参数
+/// * `date_time` - 日期时间对象
+///
+/// # 返回值
+/// 返回该年份的第一天（1月1日）的开始时间（00:00:00）
+///
+/// # 示例
+/// ```
+/// use chrono::{Datelike, Local, NaiveDateTime, TimeZone, Timelike};
+/// use huturs_core::datetime;
+/// let naive = NaiveDateTime::parse_from_str("2024-06-15 10:30:00", "%Y-%m-%d %H:%M:%S").unwrap();
+/// let date_time = Local.from_local_datetime(&naive).unwrap();
+/// let start = datetime::start_time_of_year(&date_time);
+/// assert_eq!(start.year(), 2024);
+/// assert_eq!(start.month(), 1);
+/// assert_eq!(start.day(), 1);
+/// ```
 pub fn start_time_of_year<T>(date_time: &DateTime<T>) -> DateTime<T>
 where
     T: TimeZone,
@@ -240,7 +409,7 @@ where
         .and_then(|dt| dt.with_minute(0))
         .and_then(|dt| dt.with_second(0))
         .and_then(|dt| dt.with_nanosecond(0))
-        .expect("Failed to calculate end of year")
+        .expect("Failed to calculate start of year")
 }
 
 /// 日期时间偏移单位枚举
@@ -270,6 +439,7 @@ pub enum DateTimeOffsetUnit {
 /// # 示例
 /// ```
 /// use chrono::Local;
+/// use chrono::Timelike;
 /// use huturs_core::datetime::{DateTimeOffsetUnit, offset};
 /// let now = Local::now();
 /// let future = offset(now, 1, DateTimeOffsetUnit::HOURS);
@@ -288,6 +458,25 @@ pub fn offset<T: TimeZone>(
     }
 }
 
+/// 计算两个日期时间之间的秒数差
+///
+/// # 参数
+/// * `date_time1` - 起始日期时间
+/// * `date_time2` - 结束日期时间
+///
+/// # 返回值
+/// 返回 `date_time2` 减去 `date_time1` 的秒数差（可为负数）
+///
+/// # 示例
+/// ```
+/// use chrono::{Local, NaiveDateTime, TimeZone, Timelike};
+/// use huturs_core::datetime;
+/// let naive1 = NaiveDateTime::parse_from_str("2024-06-15 10:00:00", "%Y-%m-%d %H:%M:%S").unwrap();
+/// let naive2 = NaiveDateTime::parse_from_str("2024-06-15 10:01:00", "%Y-%m-%d %H:%M:%S").unwrap();
+/// let date_time1 = Local.from_local_datetime(&naive1).unwrap();
+/// let date_time2 = Local.from_local_datetime(&naive2).unwrap();
+/// assert_eq!(datetime::between(&date_time1, &date_time2), 60);
+/// ```
 pub fn between<T: TimeZone>(date_time1: &DateTime<T>, date_time2: &DateTime<T>) -> i64 {
     (date_time2.naive_local() - date_time1.naive_local()).num_seconds()
 }
