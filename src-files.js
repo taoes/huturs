@@ -1,0 +1,2 @@
+createSrcSidebar('[["example",["",[],["date.rs","main.rs"]]],["huturs_core",["",[],["amount.rs","datetime.rs","file.rs","lib.rs","math.rs","stopwatch.rs","str.rs","timestamp.rs","util.rs"]]],["huturs_core",["",[],["amount.rs","datetime.rs","file.rs","lib.rs","math.rs","stopwatch.rs","str.rs","timestamp.rs"]]]]');
+//{"start":19,"fragment_lengths":[41,130,120]}

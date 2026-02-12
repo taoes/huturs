@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["abs","abs_f64","add","average","cube","divide","is_even","is_odd","max","max_in_array","min","min_in_array","multiply","power","sample_standard_deviation","sample_variance","square","standard_deviation","subtract","sum","variance"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["append_file","delete_file","read_dirs","read_file","write_file"]};

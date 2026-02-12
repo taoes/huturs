@@ -1,0 +1,1 @@
+rd_("gexamplekhuturs_core")

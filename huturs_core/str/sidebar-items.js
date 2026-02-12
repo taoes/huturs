@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["contains","ends_with","is_blank","is_empty","is_empty_str","is_not_empty","join","length","repeat","replace","reverse","split","starts_with","substring","to_lowercase","to_uppercase","trim","trim_end","trim_start"]};
