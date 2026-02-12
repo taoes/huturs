@@ -1,5 +1,5 @@
-use chrono::Local;
-use huturs_core::*;
+
+use huturs_core::datetime::*;
 
 #[test]
 pub fn test_format_current_timestamp(){

@@ -3,5 +3,19 @@ name = "huturs-core"
 version = "0.1.0"
 edition = "2021"
 
+
+[features]
+default = ["amount", "datetime", "file", "math", "stopwatch", "str", "timestamp"]
+str = []
+amount = []
+file = []
+math = []
+stopwatch = []
+timestamp = []
+datetime = ["str", "dep:chrono"]
+
+
+
+
 [dependencies]
-chrono = { version = "0.4", features = ["clock"] }
+chrono = { version = "0.4", features = ["clock"], optional = true }

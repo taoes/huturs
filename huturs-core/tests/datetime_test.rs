@@ -1,6 +1,5 @@
 use chrono::{DateTime, Datelike, Local, NaiveDateTime, TimeZone, Timelike};
 use huturs_core::*;
-
 #[test]
 pub fn test_reformat() {
     let content = String::from("2023-04-01 12:00:00");
@@ -65,7 +64,6 @@ pub fn test_parse() {
     let result = parse(&content, &fmt, Local);
     assert_eq!(result.is_err(), false);
     assert_eq!(result.is_ok(), true);
-
 
     let content = String::from("2024-02-29 00:00:00");
     let fmt = String::from("%Y-%m-%d %H:%M:%S");

@@ -1,5 +1,4 @@
 use huturs_core::{current_timestamp, file, read_dirs};
-use std::os;
 
 #[test]
 pub fn test_write_and_read_file() {
