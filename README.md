@@ -1,4 +1,8 @@
-# Huturs
+
+[🇨🇳 中文](README_CN.md)
+[🇬🇧 English](README.md)
+---
+# HutuRs
 
 A comprehensive Rust utility library providing common tools for string manipulation, date/time operations, and mathematical calculations.
 
@@ -21,116 +25,11 @@ Add this to your `Cargo.toml`:
 huturs-core = "0.1.0"
 ```
 
-## Usage
+## Documentation
 
-### String Operations
+For detailed API documentation and usage examples, please visit:
 
-```rust
-use huturs_core::string;
-
-fn main() {
-    // Check if string is empty
-    let empty = string::is_empty("");
-    
-    // Convert to uppercase
-    let upper = string::to_uppercase("hello");
-    
-    // Reverse string
-    let reversed = string::reverse("rust");
-    
-    // Split string
-    let parts = string::split("a,b,c", ",");
-}
-```
-
-### Date/Time Operations
-
-```rust
-use huturs_core::date;
-
-fn main() {
-    // Get current timestamp in seconds
-    let timestamp = date::current_timestamp();
-    
-    // Get current timestamp in milliseconds
-    let timestamp_ms = date::current_timestamp_millis();
-    
-    // Check if timestamp is in the future
-    let is_future = date::is_future(timestamp + 1000);
-    
-    // Calculate difference between two timestamps
-    let timestamp1 = date::current_timestamp();
-    let timestamp2 = timestamp1 - 3600; // 1 hour ago
-    let diff = date::diff_seconds(timestamp1, timestamp2);
-    
-    // Add seconds to timestamp
-    let future_time = date::add_seconds(timestamp, 3600);
-    
-    // Get days from timestamp
-    let days = date::get_days(timestamp);
-}
-```
-
-### Math Operations
-
-```rust
-use huturs_core::math;
-
-fn main() {
-    // Basic operations
-    let sum = math::add(5, 3);
-    let product = math::multiply(4, 6);
-    
-    // Array operations
-    let numbers = vec![1.0, 2.0, 3.0, 4.0, 5.0];
-    let avg = math::average(&numbers);
-    let max_val = math::max_in_array(&numbers);
-    
-    // Check parity
-    let is_even = math::is_even(4);
-}
-```
-
-## Modules
-
-### `string`
-- Empty and blank checks
-- Case conversion (uppercase/lowercase)
-- Trimming operations
-- String reversal
-- Pattern matching (contains, starts_with, ends_with)
-- String replacement and splitting
-- String joining and repetition
-
-### `date`
-- Current timestamp retrieval (seconds/milliseconds)
-- Timestamp formatting
-- Time difference calculations
-- Future/past timestamp checks
-- Time arithmetic (add/subtract seconds)
-- Time unit conversions (minutes, hours, days)
-
-### `math`
-- Basic arithmetic operations (add, subtract, multiply, divide)
-- Absolute value calculations
-- Max/min values
-- Power operations (square, cube, power)
-- Parity checks (even/odd)
-- Array operations (sum, average, max, min)
-
-## Project Structure
-
-```
-huturs/
-├── huturs-core/       # Core library
-│   ├── src/
-│   │   ├── string/    # String utilities
-│   │   ├── date/      # Date/time utilities
-│   │   └── math/      # Math utilities
-│   └── tests/         # Integration tests
-├── example/           # Example usage
-└── Cargo.toml         # Workspace configuration
-```
+📚 [https://taoes.github.io/huturs/huturs_core/index.html](https://taoes.github.io/huturs/huturs_core/index.html)
 
 ## Development
 
