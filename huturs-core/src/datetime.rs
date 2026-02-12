@@ -4,6 +4,7 @@
 use chrono::{DateTime, Datelike, Local, NaiveDateTime, TimeZone, Timelike};
 use std::fmt::Display;
 use std::io::Error;
+use std::ops::Add;
 
 /// 格式化当前时间为指定格式的字符串
 ///
@@ -528,28 +529,6 @@ pub fn after<T: TimeZone>(dt1: DateTime<T>, dt2: DateTime<T>) -> bool {
     dt1 > dt2
 }
 
-/// 判断两个日期时间是否相等
-///
-/// # 参数
-/// * `dt1` - 第一个日期时间
-/// * `dt2` - 第二个日期时间
-///
-/// # 返回值
-/// 如果两个日期时间相同，返回 `true`，否则返回 `false`
-///
-/// # 示例
-/// ```
-/// use chrono::{Local, NaiveDateTime, TimeZone};
-/// use huturs_core::datetime;
-/// let naive1 = NaiveDateTime::parse_from_str("2024-06-15 10:00:00", "%Y-%m-%d %H:%M:%S").unwrap();
-/// let naive2 = NaiveDateTime::parse_from_str("2024-06-15 10:00:00", "%Y-%m-%d %H:%M:%S").unwrap();
-/// let dt1 = Local.from_local_datetime(&naive1).unwrap();
-/// let dt2 = Local.from_local_datetime(&naive2).unwrap();
-/// assert_eq!(datetime::equal(&dt1, &dt2), true);
-/// ```
-pub fn equal<T: TimeZone>(dt1: &DateTime<T>, dt2: &DateTime<T>) -> bool {
-    *dt1 == *dt2
-}
 /// 判断两个不同时区的日期时间是否相等
 ///
 /// # 参数
@@ -568,11 +547,8 @@ pub fn equal<T: TimeZone>(dt1: &DateTime<T>, dt2: &DateTime<T>) -> bool {
 /// let dt_utc: DateTime<Utc> = Utc.from_utc_datetime(&naive_utc);
 /// let offset_east8 = FixedOffset::east_opt(8 * 3600).unwrap();
 /// let dt_east8: DateTime<FixedOffset> = offset_east8.from_local_datetime(&naive_east8).unwrap();
-/// assert_eq!(datetime::equal_different_timezone(&dt_utc, &dt_east8), true);
+/// assert_eq!(datetime::equal(&dt_utc, &dt_east8), true);
 /// ```
-pub fn equal_different_timezone<T: TimeZone, U: TimeZone>(
-    dt1: &DateTime<T>,
-    dt2: &DateTime<U>,
-) -> bool {
-    dt1.timestamp() == dt2.timestamp()
+pub fn equal<T: TimeZone, U: TimeZone>(dt1: &DateTime<T>, dt2: &DateTime<U>) -> bool {
+    dt1.naive_utc().and_utc().timestamp() == dt2.naive_utc().and_utc().timestamp()
 }

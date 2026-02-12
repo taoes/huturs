@@ -1,6 +1,7 @@
 use chrono::{DateTime, Datelike, FixedOffset, Local, NaiveDateTime, TimeZone, Timelike, Utc};
 use huturs_core::*;
-use std::ptr::eq;
+use huturs_core::DateTimeOffsetUnit::SECOND;
+
 #[test]
 pub fn test_reformat() {
     let content = String::from("2023-04-01 12:00:00");
@@ -425,19 +426,6 @@ pub fn test_is_pm() {
 
 #[test]
 pub fn test_equal() {
-    let naive = NaiveDateTime::parse_from_str("2024-06-15 15:30:00", "%Y-%m-%d %H:%M:%S").unwrap();
-    let naive2 = NaiveDateTime::parse_from_str("2024-06-15 15:30:01", "%Y-%m-%d %H:%M:%S").unwrap();
-
-    let fix = FixedOffset::east_opt(8 * 3600).unwrap();
-    let date_time: DateTime<FixedOffset> = fix.from_local_datetime(&naive).unwrap();
-    let date_time2: DateTime<FixedOffset> = fix.from_local_datetime(&naive2).unwrap();
-
-    assert_eq!(equal(&date_time, &date_time), true);
-    assert_eq!(equal(&date_time, &date_time2), false);
-}
-
-#[test]
-pub fn test_equal_different_timezone() {
     // UTC 时间：2024-06-15 07:30:00
     let naive_utc =
         NaiveDateTime::parse_from_str("2024-06-15 07:30:00", "%Y-%m-%d %H:%M:%S").unwrap();
@@ -456,14 +444,19 @@ pub fn test_equal_different_timezone() {
     // 创建东七区时间：2024-06-15 14:30:00 UTC+7
     // 使用 FixedOffset 明确指定时区
     let offset_east7 = FixedOffset::east_opt(7 * 3600).unwrap();
-    let date_time_east7: DateTime<FixedOffset> = offset_east7.from_local_datetime(&naive_east7).unwrap();
+    let date_time_east7: DateTime<FixedOffset> =
+        offset_east7.from_local_datetime(&naive_east7).unwrap();
 
     // 创建东八区时间：2024-06-15 15:30:00 UTC+8
     let offset_east8 = FixedOffset::east_opt(8 * 3600).unwrap();
-    let date_time_east8: DateTime<FixedOffset> = offset_east8.from_local_datetime(&naive_east8).unwrap();
+    let date_time_east8: DateTime<FixedOffset> =
+        offset_east8.from_local_datetime(&naive_east8).unwrap();
 
     // 三个时间应该代表同一时刻
-    assert_eq!(equal_different_timezone(&date_time_utc, &date_time_east7), true);
-    assert_eq!(equal_different_timezone(&date_time_utc, &date_time_east8), true);
-    assert_eq!(equal_different_timezone(&date_time_east7, &date_time_east8), true);
+    assert_eq!(equal(&date_time_utc, &date_time_east7), true);
+    assert_eq!(equal(&date_time_utc, &date_time_east8), true);
+    assert_eq!(equal(&date_time_east7, &date_time_east8), true);
+
+    let time_offset = offset(date_time_east8, 10, DateTimeOffsetUnit::HOURS);
+    assert_eq!(equal(&date_time_east7, &time_offset), false);
 }

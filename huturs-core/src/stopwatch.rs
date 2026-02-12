@@ -228,8 +228,11 @@ impl StopWatch {
     ///
     /// ```
     /// use huturs_core::stopwatch::StopWatch;
+    /// use std::thread;
+    /// use std::time::Duration;
     ///
     /// let mut sw = StopWatch::start_new();
+    /// thread::sleep(Duration::from_millis(1));
     /// let nanos = sw.elapsed_nanos();
     /// assert!(nanos > 0);
     /// ```
